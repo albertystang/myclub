@@ -1,0 +1,47 @@
+{% extends "events/base.html" %}
+
+{% block title %}Events{% endblock title %}
+
+{% block content %}    
+    <h2 class="mt-4">All Events...</h2>
+    <br/>
+    {% for event in events %}
+        {% if event.approved %}
+            <div class="card">
+                <div class="card-header">
+                    <b><h5>{{ event }}</h5></b>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Venue: {{ event.venue }}</h5>
+                    <p class="card">
+                        <ul>    
+                            <li>Date: {{ event.event_date }}</li>
+                            <li>Dates Till Event: {{ event.Days_till }}</li>
+                            <li>Occured: {{ event.Is_Past }}</li>
+                            <li>Venue: {{ event.venue }}</li>
+                            <li>Venue Website: {{ event.venue.web }}</li>
+                            <li>Manager: {{ event.manager }}</li>
+                            <li>Description: {{ event.description }}</li>
+                            <li>Approved: {{ event.approved }}</li>
+                            <li>
+                                Attendees:<br/>
+                                {% for attendee in event.attendees.all %}
+                                    {{ attendee }}<br>
+                                {% endfor %}
+                            </li>
+                        </ul>
+                    </p>            
+                </div>
+                {% if user.is_authenticated %}
+                    {% if user == event.manager or user.is_superuser %}
+                        <div class="card-footer text-body-secondary">
+                            <a href="{% url 'update_event' event.id %}" class="btn btn-outline-secondary btn-sm">Update event</a>            
+                            <a href="{% url 'delete_event' event.id %}" class="btn btn-outline-danger btn-sm">Delete event</a>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <br/><br/>     
+        {% endif %}
+    {% endfor %}
+{% endblock content %}
